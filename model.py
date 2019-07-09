@@ -1,4 +1,14 @@
 # CNN model for categorizing videos
+# Ashley Fletcher
+
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+import pickle
+from datetime import datetime
+import tensorflow as tf
+from tensorflow.keras import layers
+
+tf.enable_eager_execution()
 
 # first convolutional layers
 # should each output shape 55x55x96
@@ -55,3 +65,12 @@ from tensorflow.keras.optimizers import SGD
 opt = SGD(lr=0.01)
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
+
+
+
+
+time = (datetime.now()).strftime('%Y-%m-%d-%H:%M')
+filename = 'model-' + time
+output_file = open(filename, 'wb')
+
+pickle.dump(model, output_file)
