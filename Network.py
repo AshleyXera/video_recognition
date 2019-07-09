@@ -88,17 +88,49 @@ def split_data(data):
     for features, label in data:
        X.append(features)
        y.append(label)
-       
-    testing_data1 = None # free up storage
 
     X = np.array(X) # convert to numpy array
 
-    plt.imshow(X[1])
-    plt.show()
-
     return X, y
 
+def sort_frames(X, y):
+    i=0
+    # 20 arrays
+    # X2[0] holds frame 0 of each video, X2[1] holds frame 1, etc.
+    X2 = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
 
-data = load_data(TestFrames1DIR)
-X, y = split_data(data)
+    # holds the category tag of the videos; y2[0] is for the 0th frames, etc.
+    y2 = []
 
+    # put data from 0-255 into scale of 0-1
+    X = X/255.
+
+    # split each viedo along the columns of X2
+    for frame in X:
+        X2[ i % 20 ].append(frame)
+        
+        if i % 20 == 0:
+            # add the video's tag to y2
+            y2.append(y[i]) 
+
+        i+=1
+        if i % 1000 == 0:
+            print(i)
+
+    end = datetime.now()
+    duration = end - start
+    print( 'runtime: ' + str(duration))
+
+def preprocess(directory):
+    data = load_data(directory)
+    frames, labels = split_data(data)
+    frames, labels = sort_frames(frames, labels)
+
+    return frames, labels
+
+frames, labels = preprocess(TestFrames1DIR)
+
+# !!! load the model here !!! #
+
+
+model.fit(frames, labels, batch_size = 10, epochs = 5, validation_split=0.0)
