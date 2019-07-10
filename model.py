@@ -7,6 +7,7 @@ import pickle
 from datetime import datetime
 import tensorflow as tf
 from tensorflow.keras import layers
+from tensorflow.keras.optimizers import SGD
 
 tf.enable_eager_execution()
 
@@ -49,7 +50,7 @@ conv5 = layers.Conv2D(256, 3, strides=1 )( conv4 )
 pool3 = layers.MaxPool2D( pool_size=3, strides=2 )( conv5 )
 
 # 
-flat = layers.Flatten()( pool2 ) # set to pool3 when uncomment previous lines
+flat = layers.Flatten()( pool3 ) # set to pool3 when uncomment previous lines
 
 # three fully-connected layers
 fc1 = layers.Dense( units=512 )( flat ) # i reduced the number of units for testing on my laptop
@@ -61,16 +62,12 @@ soft = layers.Activation( 'softmax' )( fc3 )
 
 model = tf.keras.Model( inputs=inputs, outputs=soft )
 
-from tensorflow.keras.optimizers import SGD
 opt = SGD(lr=0.01)
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
-
-
-
-time = (datetime.now()).strftime('%Y-%m-%d-%H:%M')
-filename = 'model-' + time
+# time = (datetime.now()).strftime('%Y-%m-%d-%H:%M')
+filename = 'model-' # + time
 output_file = open(filename, 'wb')
-
 pickle.dump(model, output_file)
+output_file.close()

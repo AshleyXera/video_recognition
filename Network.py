@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 from datetime import datetime
+import pickle
 
 import numpy as np
 import tensorflow as tf
@@ -128,9 +129,14 @@ def preprocess(directory):
 
     return frames, labels
 
+
+
 frames, labels = preprocess(TestFrames1DIR)
 
 # !!! load the model here !!! #
-
+# time = (datetime.now()).strftime('%Y-%m-%d-%H:%M')
+filename = 'model-' # + time
+input_file = open(filename, 'rb')
+model = pickle.load(input_file)
 
 model.fit(frames, labels, batch_size = 10, epochs = 5, validation_split=0.0)
